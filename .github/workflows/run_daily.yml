@@ -3,6 +3,11 @@ name: scraper
 on:
     push:
 
+env:
+    TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+    TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+    
+
 jobs:
      Daily-Ran:
          runs-on: ubuntu-latest
