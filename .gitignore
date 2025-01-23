@@ -6,3 +6,7 @@ credentials.json
 *.db
 *.log
 *.xlsx
+first_program.py
+proverka_tg.py
+scraper_rabochiy.py
+
