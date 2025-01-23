@@ -1,0 +1,11 @@
+name: scraper
+
+on:
+    push:
+
+jobs:
+     Daily-Ran:
+         runs-on: ubuntu-latest
+         steps:
+             - name: Checkout Code
+               uses: actions/checkout@v4
