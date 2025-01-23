@@ -1,2 +1,8 @@
 venv/
 .env
+.DS_Store
+.vscode/
+credentials.json
+*.db
+*.log
+*.xlsx
