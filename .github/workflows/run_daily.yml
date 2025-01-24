@@ -2,6 +2,8 @@ name: scraper
 
 on:
   push:
+  schedule:
+      - cron: '0 9 * * *'
 
 env:
   TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
