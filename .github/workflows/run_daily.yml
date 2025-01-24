@@ -1,25 +1,32 @@
 name: scraper
 
 on:
-    push:
+  push:
 
 env:
-    TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-    TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-    type: ${{ secrets.TYPE }}
-    project_id: ${{ secrets.PROJECT_ID }}
-    private_key_id: ${{ secrets.PRIVATE_KEY_ID }}
-    private_key: ${{ secrets.PRIVATE_KEY }}
-    client_email: ${{ secrets.CLIENT_EMAIL }}
-    token_uri: ${{ secrets.TELEGRAM_TOKEN }}
+  TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+  TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
 
 jobs:
-     Daily-Ran:
-         runs-on: ubuntu-latest
-         steps:
-             - name: Checkout Code
-               uses: actions/checkout@v4
-             - name: Install Dependencies
-               run: pip install -r requirements.txt
-             - name: Run App
-               run: python scraper.py
+  Daily-Ran:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Set up credentials.json
+        run: |
+          echo '{
+            "type": "${{ secrets.TYPE }}",
+            "project_id": "${{ secrets.PROJECT_ID }}",
+            "private_key_id": "${{ secrets.PRIVATE_KEY_ID }}",
+            "private_key": "${{ secrets.PRIVATE_KEY }}",
+            "client_email": "${{ secrets.CLIENT_EMAIL }}",
+            "token_uri": "${{ secrets.TOKEN_URI }}"
+          }' > credentials.json
+
+      - name: Run App
+        run: python scraper.py
