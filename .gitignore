@@ -5,6 +5,7 @@ venv/
 credentials.json
 *.db
 *.log
+!scraper_errors.log
 *.xlsx
 first_program.py
 proverka_tg.py
