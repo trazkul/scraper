@@ -1,0 +1,49 @@
+2025-01-23 22:02:03,048 - ERROR - Ошибка при парсинге запроса 'Банкетка медицинская': Message: invalid session id: session deleted as the browser has closed the connection
+from disconnected: not connected to DevTools
+  (Session info: chrome=132.0.6834.110)
+Stacktrace:
+0   chromedriver                        0x000000010285e7b8 cxxbridge1$str$ptr + 2598452
+1   chromedriver                        0x0000000102856ff8 cxxbridge1$str$ptr + 2567796
+2   chromedriver                        0x00000001023f7f0c cxxbridge1$string$len + 88260
+3   chromedriver                        0x00000001023e2240 chromedriver + 188992
+4   chromedriver                        0x00000001023e2170 chromedriver + 188784
+5   chromedriver                        0x00000001024767e0 cxxbridge1$string$len + 606616
+6   chromedriver                        0x0000000102430e1c cxxbridge1$string$len + 321492
+7   chromedriver                        0x0000000102431a64 cxxbridge1$string$len + 324636
+8   chromedriver                        0x00000001028296d4 cxxbridge1$str$ptr + 2381136
+9   chromedriver                        0x000000010282c9f4 cxxbridge1$str$ptr + 2394224
+10  chromedriver                        0x000000010281003c cxxbridge1$str$ptr + 2277048
+11  chromedriver                        0x000000010282d2b4 cxxbridge1$str$ptr + 2396464
+12  chromedriver                        0x0000000102801c04 cxxbridge1$str$ptr + 2218624
+13  chromedriver                        0x0000000102847d60 cxxbridge1$str$ptr + 2505692
+14  chromedriver                        0x0000000102847edc cxxbridge1$str$ptr + 2506072
+15  chromedriver                        0x0000000102856c6c cxxbridge1$str$ptr + 2566888
+16  libsystem_pthread.dylib             0x000000019bbabfa8 _pthread_start + 148
+17  libsystem_pthread.dylib             0x000000019bba6da0 thread_start + 8
+
+2025-01-23 22:06:17,318 - ERROR - Не удалось отправить сообщение в Telegram: {"ok":false,"error_code":400,"description":"Bad Request: chat not found"}
+2025-01-23 22:06:17,325 - ERROR - Ошибка при парсинге запроса 'Тележка медицинская': Message: invalid session id
+Stacktrace:
+0   chromedriver                        0x000000010285e7b8 cxxbridge1$str$ptr + 2598452
+1   chromedriver                        0x0000000102856ff8 cxxbridge1$str$ptr + 2567796
+2   chromedriver                        0x00000001023f7d7c cxxbridge1$string$len + 87860
+3   chromedriver                        0x00000001024300e8 cxxbridge1$string$len + 318112
+4   chromedriver                        0x000000010245c3c0 cxxbridge1$string$len + 499064
+5   chromedriver                        0x00000001024578b8 cxxbridge1$string$len + 479856
+6   chromedriver                        0x0000000102456be8 cxxbridge1$string$len + 476576
+7   chromedriver                        0x00000001023c9c44 chromedriver + 89156
+8   chromedriver                        0x00000001028296d4 cxxbridge1$str$ptr + 2381136
+9   chromedriver                        0x000000010282c9f4 cxxbridge1$str$ptr + 2394224
+10  chromedriver                        0x000000010281003c cxxbridge1$str$ptr + 2277048
+11  chromedriver                        0x000000010282d2b4 cxxbridge1$str$ptr + 2396464
+12  chromedriver                        0x0000000102801c04 cxxbridge1$str$ptr + 2218624
+13  chromedriver                        0x00000001023c86dc chromedriver + 83676
+14  dyld                                0x000000019b853f28 start + 2236
+
+2025-01-23 22:06:17,499 - ERROR - Не удалось отправить сообщение в Telegram: {"ok":false,"error_code":400,"description":"Bad Request: chat not found"}
+2025-01-23 22:16:21,733 - ERROR - Не удалось отправить сообщение в Telegram: {"ok":false,"error_code":404,"description":"Not Found"}
+2025-01-23 22:18:42,140 - ERROR - Не удалось отправить сообщение в Telegram: {"ok":false,"error_code":400,"description":"Bad Request: chat not found"}
+2025-01-23 22:19:42,722 - ERROR - Не удалось отправить сообщение в Telegram: {"ok":false,"error_code":404,"description":"Not Found"}
+2025-01-23 22:30:35,962 - ERROR - Не удалось отправить сообщение в Telegram: {"ok":false,"error_code":400,"description":"Bad Request: chat not found"}
+2025-01-24 12:44:36,806 - ERROR - Ошибка во время выполнения скрипта: Missing required parameter "spreadsheetId"
+2025-01-24 12:44:36,979 - ERROR - Не удалось отправить сообщение в Telegram: {"ok":false,"error_code":400,"description":"Bad Request: chat_id is empty"}
