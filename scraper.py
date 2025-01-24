@@ -167,7 +167,7 @@ finally:
         # Отправляем сообщение "scraper" в Telegram
         send_telegram_message(
             os.getenv("TELEGRAM_TOKEN"),
-            os.getenv("TELEGRAM_CHAT_ID")
+            os.getenv("TELEGRAM_CHAT_ID"),
             "scraper",
         )
 
@@ -176,7 +176,7 @@ finally:
         send_telegram_message(
             os.getenv("TELEGRAM_TOKEN"),
             os.getenv("TELEGRAM_CHAT_ID"),
-            "Скрипт завершён успешно"
+            "Скрипт завершён успешно",
         )
 
     if "driver" in locals():
