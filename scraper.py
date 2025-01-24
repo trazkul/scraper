@@ -1,5 +1,6 @@
 success = False  # Флаг успешности
 
+import os
 import logging
 import requests
 import pandas as pd
