@@ -35,15 +35,13 @@ def send_telegram_message(token, chat_id, message):
 
 
 # Telegram Bot токен и chat_id
-TELEGRAM_TOKEN = (
-    "8112509778:AAG0g311NYR5sFqnnmANQkhRv1KHHHJiLIg"  # Укажите токен вашего бота
-)
-TELEGRAM_CHAT_ID = "-1002378273031"  # Укажите chat_id (ваш или группы)
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 # Google Sheets настройки
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 SERVICE_ACCOUNT_FILE = "credentials.json"
-SPREADSHEET_ID = "1JtWOBkXn3itpp8Un6HP-tDQ1c96PBBzmrZOuliUedUQ"
+SPREADSHEET_ID = os.getenv("SPREADSHEET_ID")
 
 creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 service = build("sheets", "v4", credentials=creds)
@@ -139,8 +137,8 @@ finally:
     if not success:
         # Отправляем сообщение "scraper" в Telegram
         send_telegram_message(
-            "8112509778:AAG0g311NYR5sFqnnmANQkhRv1KHHHJiLIg",
-            "-1002378273031",
+            os.getenv("TELEGRAM_TOKEN"),
+            os.getenv("TELEGRAM_CHAT_ID")
             "scraper",
         )
     if "driver" in locals():
