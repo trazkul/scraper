@@ -6,7 +6,12 @@ on:
 env:
     TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
     TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-    
+    type: ${{ secrets.TYPE }}
+    project_id: ${{ secrets.PROJECT_ID }}
+    private_key_id: ${{ secrets.PRIVATE_KEY_ID }}
+    private_key: ${{ secrets.PRIVATE_KEY }}
+    client_email: ${{ secrets.CLIENT_EMAIL }}
+    token_uri: ${{ secrets.TELEGRAM_TOKEN }}
 
 jobs:
      Daily-Ran:
