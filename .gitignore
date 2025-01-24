@@ -9,6 +9,4 @@ credentials.json
 first_program.py
 proverka_tg.py
 scraper_rabochiy.py
-echo ".~lock.*" >> .gitignore
-git add .gitignore
-git commit -m "Добавил временные файлы в .gitignore"
+.~lock.*
