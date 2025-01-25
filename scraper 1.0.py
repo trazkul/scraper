@@ -3,13 +3,14 @@ success = False  # Флаг успешности
 import os
 import logging
 import requests
-import time
-from datetime import datetime
+import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
+import time
+from datetime import datetime
 from googleapiclient.discovery import build
 from google.oauth2.service_account import Credentials
 from selenium.common.exceptions import WebDriverException
@@ -50,54 +51,6 @@ service = build("sheets", "v4", credentials=creds)
 chrome_options = Options()
 chrome_options.add_argument("--incognito")
 chrome_options.add_argument("--headless")
-
-
-# Функция для применения фильтров в Google Таблице
-def apply_filters(service, spreadsheet_id, date_to_filter, company_names):
-    # Получение информации о листах, чтобы узнать sheetId
-    sheet_metadata = service.spreadsheets().get(spreadsheetId=spreadsheet_id).execute()
-    sheet_id = sheet_metadata["sheets"][0]["properties"]["sheetId"]  # ID первого листа
-
-    # Фильтр для всей таблицы
-    filter_request = {
-        "requests": [
-            {
-                "setBasicFilter": {
-                    "filter": {
-                        "range": {
-                            "sheetId": sheet_id,
-                            "startRowIndex": 1,  # Начало со второй строки (заголовки остаются)
-                            "startColumnIndex": 0,  # Столбец A
-                        },
-                        "criteria": {
-                            0: {  # Первый столбец (дата)
-                                "condition": {
-                                    "type": "TEXT_EQ",
-                                    "values": [{"userEnteredValue": date_to_filter}],
-                                }
-                            },
-                            3: {  # Четвёртый столбец (компания)
-                                "condition": {
-                                    "type": "ONE_OF",
-                                    "values": [
-                                        {"userEnteredValue": name}
-                                        for name in company_names
-                                    ],
-                                }
-                            },
-                        },
-                    }
-                }
-            }
-        ]
-    }
-
-    # Применение фильтра через API
-    service.spreadsheets().batchUpdate(
-        spreadsheetId=spreadsheet_id, body=filter_request
-    ).execute()
-    print("Фильтры успешно применены!")
-
 
 try:
     # Основной код
@@ -185,7 +138,6 @@ try:
 
     # Сохранение в Google-таблицу
     if data:
-        # Добавляем новые данные
         sheet_data = (
             service.spreadsheets()
             .values()
@@ -206,14 +158,6 @@ try:
             body=body,
         ).execute()
 
-        # Применение фильтров
-        apply_filters(
-            service,
-            SPREADSHEET_ID,
-            today_date,  # Фильтровать по сегодняшней дате
-            ['КОРПОРАЦИЯ "МЕДИСАН"', "ТОВ Меднова", "Aloe", "Dr. Gauze"],  # Компании
-        )
-
     success = True  # Если всё прошло успешно, устанавливаем флаг
 
 except Exception as e:
@@ -221,21 +165,26 @@ except Exception as e:
 
 finally:
     if not success:
-        # Отправляем сообщение о неудаче в Telegram
+        # Отправляем сообщение "scraper" в Telegram
         send_telegram_message(
-            TELEGRAM_TOKEN,
-            TELEGRAM_CHAT_ID,
-            "scraper завершился с ошибкой",
+            os.getenv("TELEGRAM_TOKEN"),
+            os.getenv("TELEGRAM_CHAT_ID"),
+            "scraper",
         )
+
     else:
         # Отправляем сообщение об успешном завершении в Telegram
         send_telegram_message(
-            TELEGRAM_TOKEN,
-            TELEGRAM_CHAT_ID,
+            os.getenv("TELEGRAM_TOKEN"),
+            os.getenv("TELEGRAM_CHAT_ID"),
             "Скрипт завершён успешно",
         )
 
     if "driver" in locals():
         driver.quit()
+
+        # Закрываем драйвер, если он был инициализирован
+        if "driver" in locals():
+            driver.quit()
 
 print("Скрипт завершён.")
