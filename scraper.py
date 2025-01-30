@@ -94,8 +94,16 @@ try:
             if not product_link.startswith("http"):
                 product_link = "https://prom.ua" + product_link
 
-            # Парсинг цены из атрибута data-qaprice
-            product_price = price.get("data-qaprice", "Цена не указана")
+            # Парсинг цены с учетом структуры HTML
+            product_price = (
+                (
+                    price.find("span", class_="yzKb6")
+                    .get_text(strip=True)
+                    .replace("\xa0", " ")
+                )
+                if price
+                else "Цена не указана"
+            )  # Обработка пустых цен
 
             data.append(
                 [
