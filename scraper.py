@@ -95,7 +95,17 @@ try:
             product_link = product.get("href", "Нет ссылки")
             if not product_link.startswith("http"):
                 product_link = "https://prom.ua" + product_link
-            product_price = price.get_text(strip=True) if price else "Цена не указана"
+
+            # Получение цены товара
+            product_price = (
+                (
+                    price.find("span", class_="yzKb6")
+                    .get_text(strip=True)
+                    .replace("\xa0", " ")
+                )
+                if price
+                else "Цена не указана"
+            )
 
             data.append(
                 [
