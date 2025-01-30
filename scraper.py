@@ -1,5 +1,3 @@
-success = False  # Флаг успешности
-
 import os
 import logging
 import requests
@@ -86,7 +84,7 @@ try:
         "Аквадистиллятор",
         "Камера ультрафиолетовая",
         "Стерилизатор медицинский",
-        "термостат медицинский",
+        "Термостат медицинский",
         "Сумка медицинская",
     ]
     data = []
@@ -122,7 +120,9 @@ try:
             product_link = product.get("href", "Нет ссылки")
             if not product_link.startswith("http"):
                 product_link = "https://prom.ua" + product_link
-            product_price = "Цена не указана"  # Упростим для примера
+
+            # Парсинг цены из атрибута data-qaprice
+            product_price = price.get("data-qaprice", "Цена не указана")
 
             data.append(
                 [
@@ -162,29 +162,26 @@ try:
 
 except Exception as e:
     logging.error(f"Ошибка во время выполнения скрипта: {e}")
+    success = False
 
 finally:
     if not success:
         # Отправляем сообщение "scraper" в Telegram
         send_telegram_message(
-            os.getenv("TELEGRAM_TOKEN"),
-            os.getenv("TELEGRAM_CHAT_ID"),
+            TELEGRAM_TOKEN,
+            TELEGRAM_CHAT_ID,
             "scraper",
         )
 
     else:
         # Отправляем сообщение об успешном завершении в Telegram
         send_telegram_message(
-            os.getenv("TELEGRAM_TOKEN"),
-            os.getenv("TELEGRAM_CHAT_ID"),
+            TELEGRAM_TOKEN,
+            TELEGRAM_CHAT_ID,
             "Скрипт завершён успешно",
         )
 
     if "driver" in locals():
-        driver.quit()
-
-        # Закрываем драйвер, если он был инициализирован
-        if "driver" in locals():
-            driver.quit()
+        driver.quit()  # Закрываем драйвер
 
 print("Скрипт завершён.")
