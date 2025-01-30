@@ -1,3 +1,5 @@
+success = False  # Флаг успешности
+
 import os
 import logging
 import requests
@@ -93,17 +95,7 @@ try:
             product_link = product.get("href", "Нет ссылки")
             if not product_link.startswith("http"):
                 product_link = "https://prom.ua" + product_link
-
-            # Парсинг цены с учетом структуры HTML
-            product_price = (
-                (
-                    price.find("span", class_="yzKb6")
-                    .get_text(strip=True)
-                    .replace("\xa0", " ")
-                )
-                if price
-                else "Цена не указана"
-            )  # Обработка пустых цен
+            product_price = price.get_text(strip=True) if price else "Цена не указана"
 
             data.append(
                 [
@@ -143,26 +135,29 @@ try:
 
 except Exception as e:
     logging.error(f"Ошибка во время выполнения скрипта: {e}")
-    success = False
 
 finally:
     if not success:
         # Отправляем сообщение "scraper" в Telegram
         send_telegram_message(
-            TELEGRAM_TOKEN,
-            TELEGRAM_CHAT_ID,
+            os.getenv("TELEGRAM_TOKEN"),
+            os.getenv("TELEGRAM_CHAT_ID"),
             "scraper",
         )
 
     else:
         # Отправляем сообщение об успешном завершении в Telegram
         send_telegram_message(
-            TELEGRAM_TOKEN,
-            TELEGRAM_CHAT_ID,
+            os.getenv("TELEGRAM_TOKEN"),
+            os.getenv("TELEGRAM_CHAT_ID"),
             "Скрипт завершён успешно",
         )
 
     if "driver" in locals():
-        driver.quit()  # Закрываем драйвер
+        driver.quit()
+
+        # Закрываем драйвер, если он был инициализирован
+        if "driver" in locals():
+            driver.quit()
 
 print("Скрипт завершён.")
