@@ -1,5 +1,3 @@
-success = False  # Флаг успешности
-
 import os
 import logging
 import requests
@@ -52,149 +50,142 @@ chrome_options = Options()
 chrome_options.add_argument("--incognito")
 chrome_options.add_argument("--headless")
 
-try:
-    # Основной код
-    driver = webdriver.Chrome(
-        service=Service(ChromeDriverManager().install()), options=chrome_options
-    )
+# Запросы для поиска
+queries = [
+    "Банкетка медицинская",
+    "Тележка медицинская",
+    "Кресло гинекологическое",
+    "Кресло медицинское",
+    "Кушетка медицинская",
+    "Кровать медицинская",
+    "Подставка медицинская",
+    "Стойка медицинская",
+    "Стул медицинский",
+    "Стол массажный",
+    "Стол медицинский",
+    "Тумба медицинская",
+    "Шкаф медицинский",
+    "Ширма медицинская",
+    "Штатив медицинский",
+    "Негатоскоп",
+    "Носилки медицинские",
+    "Облучатель физиотерапевтический",
+    "Парафинонагреватель",
+    "Ростомер медицинский",
+    "Таблица для проверки зрения",
+    "Облучатель бактерицидный",
+    "Рециркулятор бактерицидный",
+    "Аквадистиллятор",
+    "Камера ультрафиолетовая",
+    "Стерилизатор медицинский",
+    "Термостат медицинский",
+    "Сумка медицинская",
+]
 
-    # Логика парсинга
-    queries = [
-        "Банкетка медицинская",
-        "Тележка медицинская",
-        "Кресло гинекологическое",
-        "Кресло медицинское",
-        "Кушетка медицинская",
-        "Кровать медицинская",
-        "Подставка медицинская",
-        "Стойка медицинская",
-        "Стул медицинский",
-        "Стол массажный",
-        "Стол медицинский",
-        "Тумба медицинская",
-        "Шкаф медицинский",
-        "Ширма медицинская",
-        "Штатив медицинский",
-        "Негатоскоп",
-        "Носилки медицинские",
-        "Облучатель физиотерапевтический",
-        "Парафинонагреватель",
-        "Ростомер медицинский",
-        "Таблица для проверки зрения",
-        "Облучатель бактерицидный",
-        "Рециркулятор бактерицидный",
-        "Аквадистиллятор",
-        "Камера ультрафиолетовая",
-        "Стерилизатор медицинский",
-        "Термостат медицинский",
-        "Сумка медицинская",
-    ]
-    data = []
-    today_date = datetime.today().strftime("%Y-%m-%d")
+# Переменные для контроля попыток
+success = False  # Флаг успешного завершения
+max_attempts = 5  # Количество попыток
+attempts = 0  # Счетчик попыток
 
-    for query in queries:
-        url = f"https://prom.ua/search?search_term={query.replace(' ', '%20')}"
-        driver.get(url)
-        time.sleep(5)
+while attempts < max_attempts:
+    attempts += 1
+    try:
+        # Запуск Selenium
+        driver = webdriver.Chrome(
+            service=Service(ChromeDriverManager().install()), options=chrome_options
+        )
 
-        # Прокрутка страницы для загрузки всех элементов
-        last_height = driver.execute_script("return document.body.scrollHeight")
-        while True:
-            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            time.sleep(2)
-            new_height = driver.execute_script("return document.body.scrollHeight")
-            if new_height == last_height:
-                break
-            last_height = new_height
+        data = []
+        today_date = datetime.today().strftime("%Y-%m-%d")
 
-        html = driver.page_source
-        soup = BeautifulSoup(html, "html.parser")
+        for query in queries:
+            url = f"https://prom.ua/search?search_term={query.replace(' ', '%20')}"
+            driver.get(url)
+            time.sleep(5)
 
-        companies = soup.find_all("span", {"data-qaid": "company_name"})
-        products = soup.find_all("a", {"data-qaid": "product_link"})
-        prices = soup.find_all("div", {"data-qaid": "product_price"})
+            # Прокрутка страницы для загрузки всех элементов
+            last_height = driver.execute_script("return document.body.scrollHeight")
+            while True:
+                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                time.sleep(2)
+                new_height = driver.execute_script("return document.body.scrollHeight")
+                if new_height == last_height:
+                    break
+                last_height = new_height
 
-        for index, (company, product, price) in enumerate(
-            zip(companies, products, prices), 1
-        ):
-            company_name = company.get_text(strip=True)
-            product_name = product.get("title", "Неизвестное название")
-            product_link = product.get("href", "Нет ссылки")
-            if not product_link.startswith("http"):
-                product_link = "https://prom.ua" + product_link
+            html = driver.page_source
+            soup = BeautifulSoup(html, "html.parser")
 
-            # Получение цены товара
-            product_price = (
-                (
+            companies = soup.find_all("span", {"data-qaid": "company_name"})
+            products = soup.find_all("a", {"data-qaid": "product_link"})
+            prices = soup.find_all("div", {"data-qaid": "product_price"})
+
+            for index, (company, product, price) in enumerate(
+                zip(companies, products, prices), 1
+            ):
+                company_name = company.get_text(strip=True)
+                product_name = product.get("title", "Неизвестное название")
+                product_link = product.get("href", "Нет ссылки")
+                if not product_link.startswith("http"):
+                    product_link = "https://prom.ua" + product_link
+
+                product_price = (
                     price.find("span", class_="yzKb6")
                     .get_text(strip=True)
                     .replace("\xa0", " ")
+                    if price and price.find("span", class_="yzKb6")
+                    else "Цена не указана"
                 )
-                if price
-                else "Цена не указана"
+
+                data.append(
+                    [
+                        today_date,
+                        query,
+                        index,
+                        company_name,
+                        product_name,
+                        product_price,
+                        product_link,
+                    ]
+                )
+
+        # Сохранение в Google-таблицу
+        if data:
+            sheet_data = (
+                service.spreadsheets()
+                .values()
+                .get(spreadsheetId=SPREADSHEET_ID, range="Лист1")
+                .execute()
+                .get("values", [])
             )
 
-            data.append(
-                [
-                    today_date,
-                    query,
-                    index,
-                    company_name,
-                    product_name,
-                    product_price,
-                    product_link,
-                ]
-            )
+            last_row = len(sheet_data)
+            range_name = f"Лист1!A{last_row + 1}"
 
-    # Сохранение в Google-таблицу
-    if data:
-        sheet_data = (
-            service.spreadsheets()
-            .values()
-            .get(spreadsheetId=SPREADSHEET_ID, range="Лист1")
-            .execute()
-            .get("values", [])
-        )
+            body = {"values": data}
+            service.spreadsheets().values().append(
+                spreadsheetId=SPREADSHEET_ID,
+                range=range_name,
+                valueInputOption="RAW",
+                insertDataOption="INSERT_ROWS",
+                body=body,
+            ).execute()
 
-        last_row = len(sheet_data)
-        range_name = f"Лист1!A{last_row + 1}"
+        success = True  # Успешное выполнение
+        break  # Выход из цикла после успешной попытки
 
-        body = {"values": data}
-        service.spreadsheets().values().append(
-            spreadsheetId=SPREADSHEET_ID,
-            range=range_name,
-            valueInputOption="RAW",
-            insertDataOption="INSERT_ROWS",
-            body=body,
-        ).execute()
+    except Exception as e:
+        logging.error(f"Попытка {attempts}: Ошибка во время выполнения скрипта: {e}")
+        time.sleep(10)  # Задержка перед повторной попыткой
 
-    success = True  # Если всё прошло успешно, устанавливаем флаг
-
-except Exception as e:
-    logging.error(f"Ошибка во время выполнения скрипта: {e}")
-
-finally:
-    if not success:
-        # Отправляем сообщение "scraper" в Telegram
-        send_telegram_message(
-            os.getenv("TELEGRAM_TOKEN"),
-            os.getenv("TELEGRAM_CHAT_ID"),
-            "scraper",
-        )
-
-    else:
-        # Отправляем сообщение об успешном завершении в Telegram
-        send_telegram_message(
-            os.getenv("TELEGRAM_TOKEN"),
-            os.getenv("TELEGRAM_CHAT_ID"),
-            "Скрипт завершён успешно",
-        )
-
-    if "driver" in locals():
-        driver.quit()
-
-        # Закрываем драйвер, если он был инициализирован
+    finally:
         if "driver" in locals():
             driver.quit()
+
+# Отправка сообщений в Telegram
+if success:
+    send_telegram_message(TELEGRAM_TOKEN, TELEGRAM_CHAT_ID, "Скрипт завершён успешно")
+else:
+    send_telegram_message(TELEGRAM_TOKEN, TELEGRAM_CHAT_ID, "scraper")
 
 print("Скрипт завершён.")
