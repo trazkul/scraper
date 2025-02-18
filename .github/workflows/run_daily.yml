@@ -2,7 +2,7 @@ name: scraper
 
 on:
   schedule:
-    - cron: '0 8 * * *'
+    - cron: '0 9 * * *'
 
 env:
   TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
