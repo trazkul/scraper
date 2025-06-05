@@ -1,0 +1,28 @@
+name: bowow
+
+on:
+  schedule:
+    - cron: '0 12 * * *'      # ежедневный запуск в 12:00 UTC
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Set up api_token.env
+        run: |
+          mkdir -p credentials
+          echo "${{ secrets.API_TOKEN_ENV }}" > credentials/api_token.env
+
+      - name: Run bowow pipeline
+        run: python bowow.py
